@@ -1,22 +1,26 @@
-package com.dicoding.asclepius.view
+package com.dicoding.asclepius.view.main
 
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.ActivityMainBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
 import com.dicoding.asclepius.model.ResultModel
 import com.yalantis.ucrop.UCrop
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.tensorflow.lite.task.vision.classifier.Classifications
 import java.io.File
+import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -40,16 +44,16 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private val cropImage = registerForActivityResult(uCropContract) { uri ->
-        currentImageUri = uri
-        showImage(uri)
+    private val cropImage = registerForActivityResult(uCropContract) { cropUri ->
+        currentImageUri = cropUri
+        showImage(currentImageUri)
     }
 
     private val requestGaleriPermission = registerForActivityResult(
         ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) {
-            val outputUri = File(filesDir, "cropped_image.jpg").toUri()
+            val outputUri = File(filesDir, "${System.currentTimeMillis()}_cropped_image.jpg").toUri()
             val list = listOf(uri, outputUri)
             cropImage.launch(list)
         }
@@ -64,7 +68,31 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         startGallery()
-        analyzeImage()
+        binding.analyzeButton.setOnClickListener {
+            analyzeImage()
+        }
+
+        binding.bottomNavigation.selectedItemId = R.id.page_1
+
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.page_2 -> {
+                    showToast("History")
+                    true
+                }
+                R.id.page_3 -> {
+                    showToast("News")
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(binding.bottomNavigation.id, fragment)
+            .commit()
     }
 
     private fun startGallery() {
@@ -93,15 +121,7 @@ class MainActivity : AppCompatActivity() {
                     runOnUiThread {
                         results?.let { it ->
                             if (it.isNotEmpty() && it[0].categories.isNotEmpty()) {
-                                println(it)
-                                val sortedCategories = it[0].categories.sortedByDescending { it.score }
-                                val displayResult = sortedCategories.joinToString(""){
-                                    "${it.label} "
-                                }
-                                showToast(displayResult)
-                                binding.analyzeButton.setOnClickListener {
-                                    moveToResult(displayResult)
-                                }
+                                showResult(it)
                             }
                         }
                     }
@@ -115,13 +135,31 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun moveToResult(resultFromClassifier: String) {
-        val intent = Intent(this, ResultActivity::class.java).also {
-            val model = ResultModel(
-                result = resultFromClassifier,
+    private fun showResult(results: List<Classifications>) {
+        val topResult = results[0]
+        val label = topResult.categories[0].label
+        val score = topResult.categories[0].score
+
+        fun Float.formatToString(): String {
+            return String.format("%.2f%%", this * 100)
+        }
+
+        showToast("$label ${score.formatToString()}")
+
+        lifecycleScope.launch {
+            delay(1.seconds)
+            val result = ResultModel(
+                resultLabel = label,
+                resultScore = score.formatToString(),
                 imageUri = currentImageUri
             )
-            it.putExtra(RESULT_KEY, model)
+            moveToResult(result)
+        }
+    }
+
+    private fun moveToResult(result: ResultModel) {
+        val intent = Intent(this, ResultActivity::class.java).also {
+            it.putExtra(RESULT_KEY, result)
         }
         startActivity(intent)
     }

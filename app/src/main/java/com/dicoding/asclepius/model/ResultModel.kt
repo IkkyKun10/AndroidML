@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class ResultModel(
-    val result: String?,
+    val resultLabel: String?,
+    val resultScore: String?,
     val imageUri: Uri?,
 ) : Parcelable
