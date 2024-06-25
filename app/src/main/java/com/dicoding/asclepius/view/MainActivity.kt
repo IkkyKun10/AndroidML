@@ -1,4 +1,4 @@
-package com.dicoding.asclepius.view.main
+package com.dicoding.asclepius.view
 
 import android.content.Context
 import android.content.Intent
@@ -15,6 +15,7 @@ import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.ActivityMainBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
 import com.dicoding.asclepius.model.ResultModel
+import com.dicoding.asclepius.view.main.ResultActivity
 import com.yalantis.ucrop.UCrop
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

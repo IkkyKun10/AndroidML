@@ -10,6 +10,7 @@ import androidx.core.view.WindowCompat
 import com.dicoding.asclepius.MyApp
 import com.dicoding.asclepius.databinding.ActivityResultBinding
 import com.dicoding.asclepius.model.ResultModel
+import com.dicoding.asclepius.view.MainActivity
 import com.dicoding.asclepius.viewModelFactory
 
 class ResultActivity : AppCompatActivity() {
