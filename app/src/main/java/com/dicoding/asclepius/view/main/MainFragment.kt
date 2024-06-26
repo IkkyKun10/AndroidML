@@ -45,7 +45,10 @@ class MainFragment : Fragment() {
         }
 
         override fun parseResult(resultCode: Int, intent: Intent?): Uri {
-            return UCrop.getOutput(intent!!)!!
+            intent?.let {
+                return UCrop.getOutput(it) ?: Uri.EMPTY
+            }
+            return Uri.EMPTY
         }
 
     }
