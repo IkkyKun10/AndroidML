@@ -22,7 +22,10 @@
             android:id="@+id/result_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:textAlignment="center"
+            style="@style/TextAppearance.AppCompat.Headline"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
             android:text="@string/result" />
     </LinearLayout>
 </ScrollView>

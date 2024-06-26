@@ -5,7 +5,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Window
 import androidx.activity.viewModels
-import androidx.annotation.RequiresApi
 import androidx.core.view.WindowCompat
 import com.dicoding.asclepius.MyApp
 import com.dicoding.asclepius.databinding.ActivityResultBinding
@@ -20,7 +19,6 @@ class ResultActivity : AppCompatActivity() {
         factoryProducer = { viewModelFactory { ResultViewModel(MyApp.realm) } }
     )
 
-    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityResultBinding.inflate(layoutInflater)

@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,11 +11,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContract
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.net.toUri
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
-import com.dicoding.asclepius.R
 import com.dicoding.asclepius.databinding.FragmentMainBinding
 import com.dicoding.asclepius.helper.ImageClassifierHelper
 import com.dicoding.asclepius.model.ResultModel
+import com.dicoding.asclepius.view.MainActivity.Companion.RESULT_KEY
 import com.yalantis.ucrop.UCrop
 import io.realm.kotlin.internal.RealmInitializer.Companion.filesDir
 import kotlinx.coroutines.delay
@@ -81,43 +81,21 @@ class MainFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         startGallery()
-//        binding.analyzeButton.setOnClickListener {
-//            analyzeImage()
-//        }
-//
-//        binding.bottomNavigation.selectedItemId = R.id.page_1
-//
-//        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
-//            when (item.itemId) {
-//                R.id.page_2 -> {
-//                    showToast("History")
-//                    true
-//                }
-//                R.id.page_3 -> {
-//                    showToast("News")
-//                    true
-//                }
-//                else -> false
-//            }
-//        }
+        binding.analyzeButton.setOnClickListener {
+            analyzeImage()
+        }
+
     }
-
-
-//    private fun replaceFragment(fragment: Fragment) {
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(binding.bottomNavigation.id, fragment)
-//            .commit()
-//    }
 
     private fun startGallery() {
         // TODO: Mendapatkan gambar dari Gallery.
-//        binding.galleryButton.setOnClickListener {
-//            requestGaleriPermission.launch("image/*")
-//        }
+        binding.galleryButton.setOnClickListener {
+            requestGaleriPermission.launch("image/*")
+        }
     }
 
     private fun showImage(uri: Uri?) {
-//        binding.previewImageView.setImageURI(uri)
+        binding.previewImageView.setImageURI(uri)
     }
 
     private fun analyzeImage() {
@@ -160,7 +138,7 @@ class MainFragment : Fragment() {
 
         showToast("$label ${score.formatToString()}")
 
-        lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launch {
             delay(1.seconds)
             val result = ResultModel(
                 resultLabel = label,
@@ -182,8 +160,9 @@ class MainFragment : Fragment() {
         Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
-    companion object {
-        const val RESULT_KEY = "result"
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 
 }
