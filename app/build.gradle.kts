@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("kotlinx-serialization")
     id("kotlin-parcelize")
     id("io.realm.kotlin")
 }
@@ -51,6 +52,9 @@ android {
     }
 }
 
+val logbackVersion: String by project
+val ktorVersion: String = "2.3.5"
+
 dependencies {
 
     implementation("androidx.core:core-ktx:1.12.0")
@@ -84,4 +88,15 @@ dependencies {
     //Realm
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.0")
     implementation("io.realm.kotlin:library-base:1.16.0")
+
+    //ktor
+    implementation("io.ktor:ktor-client-core:$ktorVersion")
+    implementation("io.ktor:ktor-client-cio:$ktorVersion")
+    implementation("io.ktor:ktor-client-okhttp:$ktorVersion")
+    implementation("io.ktor:ktor-client-logging:$ktorVersion")
+    implementation("io.ktor:ktor-client-content-negotiation:$ktorVersion")
+    implementation("io.ktor:ktor-client-auth:$ktorVersion")
+    implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
+    implementation("io.ktor:ktor-client-json:$ktorVersion")
+//    implementation("ch.qos.logback:logback-classic:$logbackVersion")
 }

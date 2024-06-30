@@ -4,8 +4,11 @@ import android.os.Parcelable
 import com.dicoding.asclepius.domain.News
 import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 @Parcelize
+@Serializable
 data class NewsResponse(
 
 	@field:SerializedName("totalResults")
@@ -19,6 +22,7 @@ data class NewsResponse(
 ) : Parcelable
 
 @Parcelize
+@Serializable
 data class ArticlesItem(
 
 	@field:SerializedName("publishedAt")
@@ -61,6 +65,7 @@ data class ArticlesItem(
 }
 
 @Parcelize
+@Serializable
 data class Source(
 
 	@field:SerializedName("name")
